@@ -12,41 +12,6 @@ from gateway.settings import project_thrift, project
 logger = logging.getLogger()
 
 
-def retry(cls, numretry=3):
-    def _func(func):
-        @functools.wraps(func)
-        def __func(*args, **kwargs):
-            cls.project = make_client(
-                thriftpy.load(project_thrift,
-                              module_name="project_thrift").ProjectHandle,
-                port=project["port"])
-
-            _numretry = numretry
-            while _numretry > 0:
-                try:
-                    res = cls.project.ping()
-                    if res == 'ok':
-                        logger.info('calling function: {}\n'.format(func.__name__))
-                        res1 = func(*args, **kwargs)
-                        logger.info('return value: {}\n'.format(res1))
-                        return res1
-                except Exception, e:
-                    logger.error(e.message)
-
-                    cls.project = make_client(
-                        thriftpy.load(project_thrift,
-                                      module_name="project_thrift").ProjectHandle,
-                        port=project["port"])
-                    _numretry -= 1
-            else:
-                logger.error("had retried {} times, but still error".format(numretry))
-                return
-
-        return __func
-
-    return _func
-
-
 class ProjectClient(object):
     def __init__(self):
         self.project = self.get_client()
@@ -170,3 +135,42 @@ class ProjectHandler(web.RequestHandler):
 
         self.write(self.project.do_actions(d))
         self.finish()
+
+
+if __name__ == '__main__':
+    pass
+
+
+def retry(cls, numretry=3):
+    def _func(func):
+        @functools.wraps(func)
+        def __func(*args, **kwargs):
+            cls.project = make_client(
+                thriftpy.load(project_thrift,
+                              module_name="project_thrift").ProjectHandle,
+                port=project["port"])
+
+            _numretry = numretry
+            while _numretry > 0:
+                try:
+                    res = cls.project.ping()
+                    if res == 'ok':
+                        logger.info('calling function: {}\n'.format(func.__name__))
+                        res1 = func(*args, **kwargs)
+                        logger.info('return value: {}\n'.format(res1))
+                        return res1
+                except Exception, e:
+                    logger.error(e.message)
+
+                    cls.project = make_client(
+                        thriftpy.load(project_thrift,
+                                      module_name="project_thrift").ProjectHandle,
+                        port=project["port"])
+                    _numretry -= 1
+            else:
+                logger.error("had retried {} times, but still error".format(numretry))
+                return
+
+        return __func
+
+    return _func
