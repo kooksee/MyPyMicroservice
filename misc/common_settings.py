@@ -28,3 +28,7 @@ def __protocols(db_protocol=None):
 logs = __logs
 databases = __dbs
 protocols = __protocols
+
+if __name__ == '__main__':
+    print pdir(pdir(__file__))
+    print sys.path

@@ -1,19 +1,32 @@
 # -*- coding:utf-8 -*-
 
+from cmd_spider.settings import url
 from controller import MainHandler
-from controller.project import ProjectsHandler, ProjectsActionHandler, ProjectHandler
 
 handlers = [
     (r"/", MainHandler),
-    (r"/test", MainHandler),
-    (r"/api/projects/?", ProjectsHandler),
-    (r"/api/projects/actions/?", ProjectsActionHandler),
-    (r"/api/projects/(?P<program>[^/]+)/?", ProjectHandler),
-    (r"/api/projects/(?P<program>[^/]+)/(?P<action>[^/]+)/?", ProjectHandler),
+    (r"/test", MainHandler)
 ]
 
-# 添加对钩子的支持
+from cmd_spider.service.cmd_handle import CmdSpiderHandle
+
+# 添加cmd markdown爬虫
 handlers += [
-    (r"/api/hooks/?", ProjectsHandler),
-    (r"/api/hooks/(?P<id>[^/]+)/?", ProjectsHandler),
+    (url('cmd_spiders/?'), CmdSpiderHandle)
+]
+
+from controller.project import ProjectsHandler, ProjectsActionHandler, ProjectHandler
+
+# 添加项目路由
+handlers += [
+    (url('projects/?'), ProjectsHandler),
+    (url('projects/actions/?'), ProjectsActionHandler),
+    (url('projects/(?P<program>[^/]+)/?'), ProjectHandler),
+    (url('projects/(?P<program>[^/]+)/(?P<action>[^/]+)/?'), ProjectHandler)
+]
+
+# 添加钩子路由
+handlers += [
+    (url('hooks/?'), ProjectsHandler),
+    (url('hooks/(?P<id>[^/]+)/?'), ProjectsHandler),
 ]

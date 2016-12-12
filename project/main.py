@@ -3,7 +3,10 @@ import argparse
 import atexit
 import sys
 import traceback
+from os.path import dirname as pdir, abspath
 from signal import signal, SIGTERM, SIGINT, SIGQUIT
+
+sys.path.append(pdir(pdir(abspath(__file__))))
 
 from project.settings import project_thrift
 

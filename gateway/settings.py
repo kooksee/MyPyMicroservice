@@ -11,6 +11,7 @@ logging.basicConfig(
     format='[%(asctime)-15s] [%(processName)s:%(process)d] %(name)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
     level=logging.INFO
 )
+logger = logging.getLogger()
 
 settings = dict(
     template_path=pjoin(ROOT_PATH, 'gateway', "templates"),
