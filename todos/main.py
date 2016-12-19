@@ -25,12 +25,14 @@ class AppManager(object):
         if __debug__:
             print option
 
-        from gateway import JmonitorApplication
-        self.app = JmonitorApplication({
+        from todos import TodosApplication
+        self.app = TodosApplication({
             "debug": option.debug
         })
 
-        HTTPServer(self.app).listen(option.port)
+        server = HTTPServer(self.app)
+        server.listen(option.port)
+
         loop = IOLoop.instance()
         try:
             loop.start()
